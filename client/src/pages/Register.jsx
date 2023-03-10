@@ -1,39 +1,162 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FormField from "../components/FormField";
-import CustomButton from "../components/CustomButton";
+import Loader from "../components/Loader";
+import { MdDelete } from "react-icons/md";
+import { saveItem } from "../utils/firebaseFunctions";
 
-const Form2 = () => {
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { storage } from "../utils/firebase-config";
+import { useStateValue } from "../context/StateProvider";
+
+const Register = () => {
+  const history = useNavigate();
   const handleFormFieldChange = (fieldName, e) => {
     setForm({ ...form, [fieldName]: e.target.value });
   };
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     sender_detail: "",
     user_detail: "",
     activity_description: "",
     activity_date: "",
-    activity_proof: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(form);
+  const [{ user }, dispatch] = useStateValue();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [imageAsset, setImageAsset] = useState(null);
+  const [fields, setFields] = useState(false);
+  const [imageUploaded, setImageUploaded] = useState(false);
+  const [imageURL, setImageURL] = useState("");
+  const [complaintUploaded, setComplaintUploaded] = useState(false);
+
+  const saveDetails = async () => {
+    setIsLoading(true);
+    try {
+      if (
+        !form.sender_detail ||
+        !form.user_detail ||
+        !form.activity_description ||
+        !form.activity_date ||
+        !imageAsset
+      ) {
+        setIsLoading(false);
+      } else {
+        const data = {
+          id: `${Date.now()}`,
+          sender_detail: form.sender_detail,
+          user_detail: form.user_detail,
+          activity_description: form.activity_description,
+          activity_date: form.activity_date,
+          activity_imageURL: imageURL,
+          uid: user.uid,
+          userName: user.displayName,
+          userEmail: user.email,
+          activity_resolved: false,
+        };
+        await saveItem(data);
+        setIsLoading(false);
+        setComplaintUploaded(true);
+        console.log("FB Data", data);
+        setImageAsset(null);
+        toast.success("Complaint Added Successfully!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        setTimeout(() => {
+          setComplaintUploaded(false);
+          history("/mycomplaints");
+        }, 2000);
+      }
+    } catch (err) {
+      console.log(err);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 4000);
+    }
   };
+
+  const uploadImage = (e) => {
+    setIsLoading(true);
+    const imageFile = e.target.files[0];
+    const storageRef = ref(storage, `Images/${Date.now()}-${imageFile.name}`);
+    const uploadTask = uploadBytesResumable(storageRef, imageFile);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const uploadProgress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 4000);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setImageAsset(downloadURL);
+          setIsLoading(false);
+          setTimeout(() => {
+            setImageUploaded(true);
+          }, 4000);
+          setImageURL(downloadURL);
+        });
+      }
+    );
+  };
+
+  const deleteImage = (e) => {
+    setIsLoading(false);
+    const deleteRef = ref(storage, imageAsset);
+    deleteObject(deleteRef).then(() => {
+      setImageAsset(null);
+      setIsLoading(false);
+      setTimeout(() => {}, 4000);
+    });
+  };
+
   return (
     <div className="">
+      <div className="flex items-center justify-center gap-2  bg-gray-gradient p-5">
+        <Link
+          to="/profile"
+          type="button"
+          className="text-white bg-white hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          My Profile
+        </Link>
+        <Link
+          to="/mycomplaints"
+          type="button"
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          My Complaints
+        </Link>
+      </div>
       <div className="bg-[#e5e5e7] flex justify-center items-center flex-col  sm:p-10 p-4">
-        {isLoading && "Loader..."}
         <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
           <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">
             Register a Complaint
           </h1>
+          <ToastContainer />
         </div>
-        <form
-          onSubmit={handleSubmit}
-          className="w-full mt-[65px] flex flex-col gap-[30px]"
-        >
+        <div className="w-full mt-[65px] flex flex-col gap-[30px]">
           <div className="flex flex-wrap gap-[40px]">
             <FormField
               labelName="Sender Email/Phone Number *"
@@ -67,37 +190,49 @@ const Form2 = () => {
             handleChange={(e) => handleFormFieldChange("user_detail", e)}
           />
           <div>
-            <div class="flex items-center justify-center w-full">
-              <label
-                for="dropzone-file"
-                class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-              >
-                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    aria-hidden="true"
-                    class="w-10 h-10 mb-3 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                  </svg>
-                  <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                    <span class="font-semibold">Click to upload</span> or drag
-                    and drop
-                  </p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
-                    SVG, PNG, JPG or GIF (MAX. 800x400px)
-                  </p>
-                </div>
-                <input id="dropzone-file" type="file" class="hidden" />
-              </label>
-            </div>
+            {isLoading ? (
+              "Loading..."
+            ) : (
+              <>
+                {!imageAsset ? (
+                  <>
+                    <label className="w-full h-full cursor-pointer">
+                      <label className="mb-1 block text-base font-medium text-[#07074D]">
+                        Upload Image:
+                      </label>
+
+                      <input
+                        type="file"
+                        name="uploadImage"
+                        accept="image/*"
+                        onChange={uploadImage}
+                      />
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <div className="relative h-full lg:h-[250px]">
+                      <img
+                        src={imageAsset}
+                        alt="uploaded img"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        className="absolute bottom-3 right-3 p-3 rounded-full bg-red-500 text-xl cursor-pointer outline-none hover:shadow-md duration-500 transition-all ease-in-out "
+                        onClick={deleteImage}
+                      >
+                        <MdDelete className="text-black" />
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </div>
           <div className="flex justify-center items-center mt-[40px]">
             <button
-              onClick={handleSubmit}
+              onClick={saveDetails}
               className="inline-flex items-center w-full px-5 py-3 mb-3 mr-1 text-base font-semibold text-white no-underline align-middle bg-blue-600 border border-transparent border-solid rounded-md cursor-pointer select-none sm:mb-0 sm:w-auto hover:bg-blue-700 hover:border-blue-700 hover:text-white focus-within:bg-blue-700 focus-within:border-blue-700"
             >
               Register complaint
@@ -112,10 +247,10 @@ const Form2 = () => {
               </svg>
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Form2;
+export default Register;

@@ -9,6 +9,7 @@ import MyComplaints from "./pages/MyComplaints";
 import AdminComplaints from "./pages/AdminComplaints";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
+import Learn from "./pages/Learn";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/registercomplaint" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/learn" element={<Learn />} />
           <Route path="/mycomplaints" element={<MyComplaints />} />
           <Route path="/allcomplaints" element={<AdminComplaints />} />
         </Routes>

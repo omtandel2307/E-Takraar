@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { close, menu } from "../assets";
+import { useStateValue } from "../context/StateProvider";
 
 const Navbar = () => {
   const [toggle, setToggle] = useState(false);
+  const [{ user }, dispatch] = useStateValue();
 
   return (
     <div>
@@ -41,10 +43,10 @@ const Navbar = () => {
                 Model
               </Link>
               <Link
-                to="/about"
+                to="/learn"
                 className="text-white hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
               >
-                About
+                Learn
               </Link>
               <Link
                 to="/profile"
@@ -58,7 +60,7 @@ const Navbar = () => {
                 to="/login"
                 className="inline-block bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 focus-visible:ring ring-indigo-300 text-white text-sm md:text-base font-semibold text-center rounded-lg outline-none transition duration-100 px-8 py-3"
               >
-                Login
+                {user ? "Logout" : "Login"}
               </Link>
             </div>
             <div className="lg:hidden flex flex-1 justify-end items-center py-5">
