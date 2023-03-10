@@ -1,12 +1,28 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useStateValue } from "../context/StateProvider";
 import Loader from "../components/Loader";
 import { useParams } from "react-router";
+import { collection, onSnapshot, orderBy, query } from "@firebase/firestore";
+import { firestore } from "../utils/firebase-config";
+import { MdSwipeDownAlt } from "react-icons/md";
 
 const MyComplaintDetail = () => {
   const [{ complaints }, dispatch] = useStateValue();
   const { id } = useParams();
   const complaint = complaints?.find((complaint) => complaint.id === id);
+  const [reports, setReports] = useState([]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(firestore, "complaints", id, "reports"),
+          orderBy("timestamp", "asc")
+        ),
+        (snapshot) => setReports(snapshot.docs.map((doc) => doc.data()))
+      ),
+    [firestore, id]
+  );
 
   return complaint ? (
     <div>
@@ -77,77 +93,46 @@ const MyComplaintDetail = () => {
         </div>
       </div>
       <div>
-        <div class="bg-white py-6 sm:py-8 lg:py-12">
-          <div class="mx-auto max-w-screen-md px-4 md:px-8">
-            <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl xl:mb-12">
-              Progress Report
-            </h2>
+        <div>
+          <div class="bg-white py-6 sm:py-8 lg:py-12">
+            <div class="mx-auto max-w-screen-md px-4 md:px-8">
+              <h2 class="mb-4 text-center text-2xl font-bold text-gray-800 md:mb-8 lg:text-3xl xl:mb-12">
+                Progress Report
+              </h2>
 
-            <div class="mb-4 flex items-center justify-between border-t border-b py-4">
-              <div class="flex flex-col gap-0.5">
-                <span class="block font-bold">Total</span>
+              <div class="mb-4 flex items-center justify-between border-t border-b py-4">
+                <div class="flex flex-col gap-0.5">
+                  <span class="block font-bold text-2xl">All Reports</span>
 
-                <div class="-ml-1 flex gap-0.5"></div>
+                  <div class="-ml-1 flex gap-0.5"></div>
 
-                <span class="block text-sm text-gray-500">
-                  Bases on 27 reviews
-                </span>
-              </div>
-
-              <a
-                href="#"
-                class="inline-block rounded-lg border bg-white px-4 py-2 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-100 focus-visible:ring active:bg-gray-200 md:px-8 md:py-3 md:text-base"
-              >
-                Write a progress report
-              </a>
-            </div>
-
-            <div class="divide-y">
-              <div class="flex flex-col gap-3 py-4 md:py-8">
-                <div>
-                  <span class="block text-sm font-bold">John McCulling</span>
                   <span class="block text-sm text-gray-500">
-                    August 28, 2021
+                    Reports written by different bodies
                   </span>
                 </div>
-
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
               </div>
-              <div class="flex flex-col gap-3 py-4 md:py-8">
-                <div>
-                  <span class="block text-sm font-bold">Kate Berg</span>
-                  <span class="block text-sm text-gray-500">July 21, 2021</span>
-                </div>
 
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
-              </div>
-              <div class="flex flex-col gap-3 py-4 md:py-8">
+              <div class="divide-y">
                 <div>
-                  <span class="block text-sm font-bold">Greg Jackson</span>
-                  <span class="block text-sm text-gray-500">
-                    March 16, 2021
-                  </span>
-                </div>
+                  {reports?.map((report) => (
+                    <div class="flex flex-col gap-3 py-2 md:py-4 border-b-2">
+                      <div>
+                        <div>
+                          <span class="text-sm font-bold flex items-center justify-start">
+                            <MdSwipeDownAlt />
+                            Added By: {report.addedBy}
+                          </span>
+                        </div>
+                        <span class="block text-sm text-gray-500">
+                          Report Added Date :{" "}
+                          <span className="font-bold">{report.timestamp}</span>
+                        </span>
+                      </div>
 
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
+                      <p class="text-black">{report.report}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
