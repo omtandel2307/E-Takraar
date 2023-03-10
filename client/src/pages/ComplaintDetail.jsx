@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useStateValue } from "../context/StateProvider";
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
 import { MdPersonOutline, MdSpeakerNotes } from "react-icons/md";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "@firebase/firestore";
+import { firestore } from "../utils/firebase-config";
+import { toast } from "react-toastify";
 
 const ComplaintDetail = () => {
   const [{ complaints }, dispatch] = useStateValue();
@@ -17,10 +28,44 @@ const ComplaintDetail = () => {
     setShowInput(!showInput);
   };
 
-  const addReport = (e) => {
+  const [reports, setReports] = useState([]);
+  console.log("object", reports);
+
+  const addReport = async (e) => {
+    let currentDate = new Date().toJSON().slice(0, 10);
     e.preventDefault();
-    console.log(bodyName, progress);
+    await addDoc(collection(firestore, "complaints", id, "reports"), {
+      addedBy: bodyName,
+      report: progress,
+      timestamp: currentDate,
+    });
+    toast.success("Complaint Added Successfully!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    setTimeout(() => {
+      setbodyName("");
+      setProgress("");
+    }, 2000);
   };
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(
+          collection(firestore, "complaints", id, "reports"),
+          orderBy("timestamp", "desc")
+        ),
+        (snapshot) => setReports(snapshot.docs.map((doc) => doc.data()))
+      ),
+    [firestore, id]
+  );
 
   return complaint ? (
     <div>
@@ -175,51 +220,22 @@ const ComplaintDetail = () => {
             )}
 
             <div class="divide-y">
-              <div class="flex flex-col gap-3 py-4 md:py-8">
-                <div>
-                  <span class="block text-sm font-bold">John McCulling</span>
-                  <span class="block text-sm text-gray-500">
-                    August 28, 2021
-                  </span>
-                </div>
+              <div>
+                {reports?.map((report) => (
+                  <div class="flex flex-col gap-3 py-4 md:py-8">
+                    <div>
+                      <span class="block text-sm font-bold">
+                        Added By: {report.addedBy}
+                      </span>
+                      <span class="block text-sm text-gray-500">
+                        Report Added Date :{" "}
+                        <span className="font-bold">{report.timestamp}</span>
+                      </span>
+                    </div>
 
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
-              </div>
-              <div class="flex flex-col gap-3 py-4 md:py-8">
-                <div>
-                  <span class="block text-sm font-bold">Kate Berg</span>
-                  <span class="block text-sm text-gray-500">July 21, 2021</span>
-                </div>
-
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
-              </div>
-              <div class="flex flex-col gap-3 py-4 md:py-8">
-                <div>
-                  <span class="block text-sm font-bold">Greg Jackson</span>
-                  <span class="block text-sm text-gray-500">
-                    March 16, 2021
-                  </span>
-                </div>
-
-                <p class="text-gray-600">
-                  This is a section of some simple filler text, also known as
-                  placeholder text. It shares some characteristics of a real
-                  written text but is random or otherwise generated. It may be
-                  used to display a sample of fonts or generate text for
-                  testing.
-                </p>
+                    <p class="text-black">{report.report}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
