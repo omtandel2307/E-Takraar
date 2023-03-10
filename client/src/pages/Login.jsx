@@ -1,14 +1,25 @@
 import React from "react";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../utils/firebase-config";
+import { useStateValue } from "../context/StateProvider";
+import { actionType } from "../context/reducer";
 
 const Login = () => {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
+  const [{ user }, dispatch] = useStateValue();
+
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await signInWithPopup(firebaseAuth, provider);
-    console.log(response);
+
+    const {
+      user: { refreshToken, providerData },
+    } = await signInWithPopup(firebaseAuth, provider);
+    dispatch({
+      type: actionType.SET_USER,
+      user: providerData[0],
+    });
+    localStorage.setItem("user", JSON.stringify(providerData[0]));
   };
   return (
     <div className="bg-discount-gradient py-6 sm:py-8 lg:py-12">
