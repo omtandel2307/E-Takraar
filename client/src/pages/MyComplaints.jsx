@@ -39,6 +39,9 @@ const MyComplaints = () => {
                 <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Complaint Description
                 </th>
+                <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Status
+                </th>
                 <th class="px-4 py-2"></th>
               </tr>
             </thead>
@@ -55,6 +58,9 @@ const MyComplaints = () => {
                 </td>
                 <td class="whitespace-nowrap px-4 py-2 text-gray-700">
                   $120,000
+                </td>
+                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                  Unresolved
                 </td>
                 <td class="whitespace-nowrap px-4 py-2">
                   <Link
