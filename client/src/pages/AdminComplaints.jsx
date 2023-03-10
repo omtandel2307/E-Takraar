@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useStateValue } from "../context/StateProvider";
 import Loader from "../components/Loader";
 
 const AdminComplaints = () => {
   const [{ complaints }, dispatch] = useStateValue();
-
   return (
     <div>
       <div className="flex items-center justify-top flex-col p-5 h-screen ">
