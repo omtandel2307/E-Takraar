@@ -1,13 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { useStateValue } from "../context/StateProvider";
 import { useParams } from "react-router";
 import Loader from "../components/Loader";
+import { MdPersonOutline, MdSpeakerNotes } from "react-icons/md";
 
 const ComplaintDetail = () => {
   const [{ complaints }, dispatch] = useStateValue();
   const { id } = useParams();
-
+  const [showInput, setShowInput] = useState(false);
+  const [bodyName, setbodyName] = useState("");
+  const [progress, setProgress] = useState("");
   const complaint = complaints?.find((complaint) => complaint.id === id);
+
+  const handleInput = (e) => {
+    e.preventDefault();
+    setShowInput(!showInput);
+  };
+
+  const addReport = (e) => {
+    e.preventDefault();
+    console.log(bodyName, progress);
+  };
 
   return complaint ? (
     <div>
@@ -54,25 +67,6 @@ const ComplaintDetail = () => {
                   {complaint?.activity_description}
                 </span>
               </div>
-              {/* <div className="mb-6 flex items-center gap-2 text-gray-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"
-                    />
-                  </svg>
-  
-                  <span className="text-sm">2-4 day shipping</span>
-                </div> */}
               <div className="flex gap-2.5">
                 <button className="inline-block flex-1 rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base">
                   Update Progress
@@ -95,22 +89,90 @@ const ComplaintDetail = () => {
 
             <div class="mb-4 flex items-center justify-between border-t border-b py-4">
               <div class="flex flex-col gap-0.5">
-                <span class="block font-bold">Total</span>
+                <span class="block font-bold">All Reports</span>
 
                 <div class="-ml-1 flex gap-0.5"></div>
 
                 <span class="block text-sm text-gray-500">
-                  Bases on 27 reviews
+                  Reports written by different bodies
                 </span>
               </div>
 
-              <a
-                href="#"
+              <button
+                onClick={handleInput}
                 class="inline-block rounded-lg border bg-white px-4 py-2 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-100 focus-visible:ring active:bg-gray-200 md:px-8 md:py-3 md:text-base"
               >
                 Write a progress report
-              </a>
+              </button>
             </div>
+
+            {showInput && (
+              <div className="bg-gray-200 p-10 rounded-lg">
+                <label
+                  for="input-group-1"
+                  class="block mb-2 text-sm font-medium text-black"
+                >
+                  Email/Name
+                </label>
+                <div class="relative mb-6">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-900">
+                    <MdPersonOutline />
+                  </div>
+                  <input
+                    type="text"
+                    id="input-group-1"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Enter Your Details"
+                    onChange={(e) => setbodyName(e.target.value)}
+                  />
+                </div>
+                <label
+                  for="input-group-1"
+                  class="block mb-2 text-sm font-medium text-black"
+                >
+                  Progress until now:
+                </label>
+                <div class="relative ">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-900">
+                    <MdSpeakerNotes />
+                  </div>
+                  <input
+                    type="text"
+                    id="input-group-1"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-gray-300 focus:border-gray-300 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Enter Progress Report Details"
+                    onChange={(e) => setProgress(e.target.value)}
+                  />
+                </div>
+                <div className="mt-4">
+                  <button
+                    onClick={addReport}
+                    class="relative inline-flex items-center justify-center p-4 px-4 py-2 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-gray-900 rounded-full shadow-md group"
+                  >
+                    <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-gray-900 group-hover:translate-x-0 ease">
+                      <svg
+                        class="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        ></path>
+                      </svg>
+                    </span>
+                    <span class="absolute flex items-center justify-center w-full h-full text-black transition-all duration-300 transform group-hover:translate-x-full ease">
+                      Add Report
+                    </span>
+                    <span class="relative invisible">Button Text</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             <div class="divide-y">
               <div class="flex flex-col gap-3 py-4 md:py-8">
