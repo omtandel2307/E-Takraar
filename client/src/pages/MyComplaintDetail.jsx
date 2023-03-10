@@ -1,12 +1,11 @@
 import React from "react";
 import { useStateValue } from "../context/StateProvider";
-import { useParams } from "react-router";
 import Loader from "../components/Loader";
+import { useParams } from "react-router";
 
-const ComplaintDetail = () => {
+const MyComplaintDetail = () => {
   const [{ complaints }, dispatch] = useStateValue();
   const { id } = useParams();
-
   const complaint = complaints?.find((complaint) => complaint.id === id);
 
   return complaint ? (
@@ -73,15 +72,6 @@ const ComplaintDetail = () => {
   
                   <span className="text-sm">2-4 day shipping</span>
                 </div> */}
-              <div className="flex gap-2.5">
-                <button className="inline-block flex-1 rounded-lg bg-indigo-500 px-8 py-3 text-center text-sm font-semibold text-white outline-none ring-indigo-300 transition duration-100 hover:bg-indigo-600 focus-visible:ring active:bg-indigo-700 sm:flex-none md:text-base">
-                  Update Progress
-                </button>
-
-                <button className="inline-block rounded-lg bg-gray-200 px-8 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base">
-                  Mark As Resolved
-                </button>
-              </div>
             </div>
           </div>
         </div>
@@ -171,4 +161,4 @@ const ComplaintDetail = () => {
   );
 };
 
-export default ComplaintDetail;
+export default MyComplaintDetail;

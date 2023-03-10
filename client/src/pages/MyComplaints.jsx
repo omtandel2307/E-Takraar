@@ -1,7 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useStateValue } from "../context/StateProvider";
+import Loader from "../components/Loader";
 
 const MyComplaints = () => {
+  const [{ user, complaints }, dispatch] = useStateValue();
+
+  console.log("usrr", user);
+  console.log("us", complaints);
+
+  const myComplaints = complaints?.filter(
+    (complaints) => complaints.uid === user.uid
+  );
+  console.log("MyComplaints", MyComplaints);
+
   return (
     <div>
       <div className="flex items-center justify-center gap-2  bg-gray-gradient p-5">
@@ -31,12 +43,15 @@ const MyComplaints = () => {
                   Complaint ID
                 </th>
                 <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Complaint Date
+                </th>
+                <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Complaint Against
                 </th>
                 <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Raised By:
                 </th>
-                <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900 ">
                   Complaint Description
                 </th>
                 <th class="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
@@ -46,31 +61,40 @@ const MyComplaints = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <tr>
-                <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
-                  John Doe
-                </td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                  24/05/1995
-                </td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                  Web Developer
-                </td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                  $120,000
-                </td>
-                <td class="whitespace-nowrap px-4 py-2 text-gray-700">
-                  Unresolved
-                </td>
-                <td class="whitespace-nowrap px-4 py-2">
-                  <Link
-                    to={"/complaints/1"}
-                    class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
-                  >
-                    View
-                  </Link>
-                </td>
-              </tr>
+              {myComplaints ? (
+                myComplaints.map((complaint) => (
+                  <tr>
+                    <td class="whitespace-nowrap px-4 py-2 font-medium text-gray-900">
+                      {complaint.id}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                      {complaint.activity_date}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                      {complaint.sender_detail}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2 text-gray-700">
+                      {complaint.user_detail}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2 text-gray-700 truncate">
+                      {complaint.activity_description}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2 text-gray-700 truncate">
+                      {complaint.activity_resolved ? "Resolved" : "Unresolved"}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-2">
+                      <Link
+                        to={`/mycomplaints/${complaint.id}`}
+                        class="inline-block rounded bg-indigo-600 px-4 py-2 text-xs font-medium text-white hover:bg-indigo-700"
+                      >
+                        View
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <Loader />
+              )}
             </tbody>
           </table>
         </div>
