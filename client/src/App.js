@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -10,8 +10,28 @@ import AdminComplaints from "./pages/AdminComplaints";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Learn from "./pages/Learn";
+import { useStateValue } from "./context/StateProvider";
+import { getAllComplaints } from "./utils/firebaseFunctions";
+import { actionType } from "./context/reducer";
+import ComplaintDetail from "./pages/ComplaintDetail";
 
 const App = () => {
+  const [{ complaints }, dispatch] = useStateValue();
+
+  const fetchData = async () => {
+    await getAllComplaints().then((data) => {
+      console.log(data);
+      dispatch({
+        type: actionType.SET_COMPLAINTS,
+        complaints: data,
+      });
+    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div>
       <Router>
@@ -25,6 +45,7 @@ const App = () => {
           <Route path="/learn" element={<Learn />} />
           <Route path="/mycomplaints" element={<MyComplaints />} />
           <Route path="/allcomplaints" element={<AdminComplaints />} />
+          <Route path="/allcomplaints/:id" element={<ComplaintDetail />} />
         </Routes>
         <Footer />
       </Router>
