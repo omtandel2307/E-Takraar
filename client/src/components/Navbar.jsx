@@ -50,7 +50,7 @@ const Navbar = () => {
                 to="/profile"
                 className="text-white hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
               >
-                Profile
+                MyProfile
               </Link>
             </nav>
             <div className="hidden lg:flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-2.5 -ml-8">
