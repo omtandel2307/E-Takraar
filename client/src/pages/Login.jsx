@@ -1,6 +1,15 @@
 import React from "react";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { app } from "../utils/firebase-config";
 
 const Login = () => {
+  const firebaseAuth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const response = await signInWithPopup(firebaseAuth, provider);
+    console.log(response);
+  };
   return (
     <div className="bg-discount-gradient py-6 sm:py-8 lg:py-12">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
@@ -64,7 +73,10 @@ const Login = () => {
               Continue with Facebook
             </button>
 
-            <button className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-8 py-3 text-center text-sm font-semibold text-gray-800 outline-none ring-gray-300 transition duration-100 hover:bg-gray-100 focus-visible:ring active:bg-gray-200 md:text-base">
+            <button
+              onClick={handleLogin}
+              className="flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-8 py-3 text-center text-sm font-semibold text-gray-800 outline-none ring-gray-300 transition duration-100 hover:bg-gray-100 focus-visible:ring active:bg-gray-200 md:text-base"
+            >
               <svg
                 className="h-5 w-5 shrink-0"
                 width="24"
