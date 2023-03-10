@@ -8,6 +8,7 @@ import Register from "./pages/Register";
 import MyComplaints from "./pages/MyComplaints";
 import AdminComplaints from "./pages/AdminComplaints";
 import Profile from "./pages/Profile";
+import Login from "./pages/Login";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/usemodel" element={<UseModel />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/registercomplaint" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/mycomplaints" element={<MyComplaints />} />
