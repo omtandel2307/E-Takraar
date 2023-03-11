@@ -3,11 +3,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { app } from "../utils/firebase-config";
 import { useStateValue } from "../context/StateProvider";
 import { actionType } from "../context/reducer";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const firebaseAuth = getAuth(app);
   const provider = new GoogleAuthProvider();
   const [{ user }, dispatch] = useStateValue();
+  const history = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -20,6 +22,7 @@ const Login = () => {
       user: providerData[0],
     });
     localStorage.setItem("user", JSON.stringify(providerData[0]));
+    history("/profile");
   };
   return (
     <div className="bg-discount-gradient py-6 sm:py-8 lg:py-12">
