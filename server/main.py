@@ -2,6 +2,9 @@ from nltk.stem import PorterStemmer
 
 import joblib
 import re
+import json
+import urllib
+import requests
 from sklearn.neural_network import MLPClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from fastapi import FastAPI
@@ -126,3 +129,26 @@ async def predict(message):
                 'This type of act is not in our database. Would you still like to report this?')
 
     return ({'predictions': ' , '.join(result)})
+
+class IPQS:
+    key = '6rZMieTmIJQcr3QU0rLidWz7QL1dFOwZ'
+
+    def malicious_url_scanner_api(self, url: str, vars: dict = {}) -> dict:
+        url = 'https://www.ipqualityscore.com/api/json/url/%s/%s' % (
+            self.key, urllib.parse.quote_plus(url))
+        x = requests.get(url, params=vars)
+        return json.loads(x.text)
+
+
+@app.get("/ipqs/{url}")
+async def ipqs_malicious_url_scanner_api(url: str, strictness: int = 0) -> dict:
+    additional_params = {
+        'strictness': strictness
+    }
+    ipqs = IPQS()
+    result = ipqs.malicious_url_scanner_api(url, additional_params)
+
+    if 'success' in result and result['success'] == True:
+        return result
+    else:
+        return {"error": "Unable to scan the URL."}
