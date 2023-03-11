@@ -15,6 +15,7 @@ import { getAllComplaints } from "./utils/firebaseFunctions";
 import { actionType } from "./context/reducer";
 import ComplaintDetail from "./pages/ComplaintDetail";
 import MyComplaintDetail from "./pages/MyComplaintDetail";
+import LinkChecker from "./pages/LinkChecker";
 
 const App = () => {
   const [{ complaints }, dispatch] = useStateValue();
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/mycomplaints" element={<MyComplaints />} />
           <Route path="/allcomplaints" element={<AdminComplaints />} />
           <Route path="/allcomplaints/:id" element={<ComplaintDetail />} />
+          <Route path="/linkchecker" element={<LinkChecker />} />
           <Route path="/mycomplaints/:id" element={<MyComplaintDetail />} />
         </Routes>
         <Footer />
