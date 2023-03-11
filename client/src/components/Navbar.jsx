@@ -48,12 +48,21 @@ const Navbar = () => {
               >
                 Learn
               </Link>
-              <Link
-                to="/profile"
-                className="text-white hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
-              >
-                MyProfile
-              </Link>
+              {(user && user.email === "meetmulik5@gmail.com" && (
+                <Link
+                  to="/allcomplaints"
+                  className="text-white hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                >
+                  Admin
+                </Link>
+              )) || (
+                <Link
+                  to="/profile"
+                  className="text-white hover:text-indigo-500 active:text-indigo-700 text-lg font-semibold transition duration-100"
+                >
+                  My Profile
+                </Link>
+              )}
             </nav>
             <div className="hidden lg:flex flex-col sm:flex-row sm:justify-center lg:justify-start gap-2.5 -ml-8">
               <Link
