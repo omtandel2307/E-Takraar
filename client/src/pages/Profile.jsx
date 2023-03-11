@@ -74,6 +74,7 @@ const Profile = () => {
                   </svg> */}
                   <img
                     src={user?.photoURL}
+                    referrerPolicy="no-referrer"
                     className="object-contain rounded-lg"
                     alt="userimg"
                   />
