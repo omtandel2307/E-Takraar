@@ -105,7 +105,7 @@ const Footer = () => {
               </div>
 
               <div>
-                <div className="text-gray-800 font-bold tracking-widest uppercase mb-4">
+                <div className="text-white font-bold tracking-widest uppercase mb-4">
                   Products
                 </div>
 
@@ -148,7 +148,7 @@ const Footer = () => {
                 </nav>
               </div>
               <div>
-                <div className="text-gray-800 font-bold tracking-widest uppercase mb-4">
+                <div className="text-white font-bold tracking-widest uppercase mb-4">
                   Company
                 </div>
 
@@ -200,7 +200,7 @@ const Footer = () => {
                 </nav>
               </div>
               <div>
-                <div className="text-gray-800 font-bold tracking-widest uppercase mb-4">
+                <div className="text-white font-bold tracking-widest uppercase mb-4">
                   Support
                 </div>
 
@@ -243,7 +243,7 @@ const Footer = () => {
                 </nav>
               </div>
               <div>
-                <div className="text-gray-800 font-bold tracking-widest uppercase mb-4">
+                <div className="text-white font-bold tracking-widest uppercase mb-4">
                   Legal
                 </div>
 

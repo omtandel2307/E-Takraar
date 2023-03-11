@@ -10,7 +10,7 @@ import {
   onSnapshot,
   orderBy,
   query,
-  serverTimestamp,
+  updateDoc,
 } from "@firebase/firestore";
 import { firestore } from "../utils/firebase-config";
 import { toast } from "react-toastify";
@@ -29,7 +29,6 @@ const ComplaintDetail = () => {
   };
 
   const [reports, setReports] = useState([]);
-  console.log("object", reports);
 
   const addReport = async (e) => {
     let currentDate = new Date().toJSON().slice(0, 10);
@@ -55,6 +54,8 @@ const ComplaintDetail = () => {
     }, 2000);
   };
 
+  console.log("params", id);
+
   useEffect(
     () =>
       onSnapshot(
@@ -66,6 +67,13 @@ const ComplaintDetail = () => {
       ),
     [firestore, id]
   );
+
+  const handleMark = async (e) => {
+    e.preventDefault();
+    await updateDoc(doc(firestore, "complaints", id), {
+      activity_resolved: true,
+    });
+  };
 
   return complaint ? (
     <div>
@@ -117,7 +125,10 @@ const ComplaintDetail = () => {
                   Update Progress
                 </button>
 
-                <button className="inline-block rounded-lg bg-gray-200 px-8 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base">
+                <button
+                  onClick={handleMark}
+                  className="inline-block rounded-lg bg-gray-200 px-8 py-3 text-center text-sm font-semibold text-gray-500 outline-none ring-indigo-300 transition duration-100 hover:bg-gray-300 focus-visible:ring active:text-gray-700 md:text-base"
+                >
                   Mark As Resolved
                 </button>
               </div>

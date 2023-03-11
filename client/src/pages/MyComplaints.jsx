@@ -6,9 +6,6 @@ import Loader from "../components/Loader";
 const MyComplaints = () => {
   const [{ user, complaints }, dispatch] = useStateValue();
 
-  console.log("usrr", user);
-  console.log("us", complaints);
-
   const myComplaints = complaints?.filter(
     (complaints) => complaints.uid === user.uid
   );
