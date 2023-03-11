@@ -21,7 +21,6 @@ const App = () => {
 
   const fetchData = async () => {
     await getAllComplaints().then((data) => {
-      console.log(data);
       dispatch({
         type: actionType.SET_COMPLAINTS,
         complaints: data,

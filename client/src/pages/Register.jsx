@@ -65,7 +65,6 @@ const Register = () => {
         await saveItem(data);
         setIsLoading(false);
         setComplaintUploaded(true);
-        console.log("FB Data", data);
         setImageAsset(null);
         toast.success("Complaint Added Successfully!", {
           position: "top-right",
