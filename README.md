@@ -31,7 +31,7 @@ To get started with the project, ensure you have the following installed:
 ```bash
 git clone https://github.com/omtandel2307/E-Takraar.git
 
-cd E-Takraar
+cd Syrus_Web2_TLE
 ```
 2. Install Dependencies:
 
