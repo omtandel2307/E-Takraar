@@ -61,3 +61,12 @@ Once the installation is complete, the tool can be used by women to ensure their
 Contributions are welcome! If you'd like to improve the project or add features, feel free to fork the repository and submit a pull request.
 
 ## Screenshots 📷
+![Sentiment Analysis](https://devfolio-prod.s3.ap-south-1.amazonaws.com/hackathons/60eb84de9a3a4a3c8d4ea8ca902666a2/projects/c01ad633c3c0437a9ccfbbea0723b96e/3943b9f1-3b9f-4651-8e6d-4e2063675517.png)
+
+![Doxxing](https://devfolio-prod.s3.ap-south-1.amazonaws.com/hackathons/60eb84de9a3a4a3c8d4ea8ca902666a2/projects/c01ad633c3c0437a9ccfbbea0723b96e/1d8d3420-d6aa-49c6-ad8e-7de07f8fd219.png)
+
+![Progress Report](https://devfolio-prod.s3.ap-south-1.amazonaws.com/hackathons/60eb84de9a3a4a3c8d4ea8ca902666a2/projects/c01ad633c3c0437a9ccfbbea0723b96e/4075ba7a-6d08-472d-949a-c20b3c912fc3.png)
+
+![Complaints](https://devfolio-prod.s3.ap-south-1.amazonaws.com/hackathons/60eb84de9a3a4a3c8d4ea8ca902666a2/projects/c01ad633c3c0437a9ccfbbea0723b96e/2b38d0f5-2969-4963-889f-62715a12d253.png)
+
+![Register a Complaint](https://devfolio-prod.s3.ap-south-1.amazonaws.com/hackathons/60eb84de9a3a4a3c8d4ea8ca902666a2/projects/c01ad633c3c0437a9ccfbbea0723b96e/e1640f08-0e7a-48d8-954f-ed6d258b3b3c.png)
